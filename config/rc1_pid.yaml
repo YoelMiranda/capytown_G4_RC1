@@ -1,0 +1,31 @@
+# RC-1 · Ganancias finales del PID (nodo cuadrado_controller.py)
+# Linea: error en m, salida w = -PID(e).  Giro: error en rad, salida w = +PID(e).
+
+simulador:            # yahboomcar_sim, world:=arena_rc1, noise:=low
+  recta:              # Exp. 1 (prueba 1D): e_final 0.31 cm, t_asent 5.77 s
+    kp: 3.0
+    ki: 0.5
+    kd: 4.0
+  giro:               # Exp. 2 (prop2): sobreimpulso 0 %, t_asent 1.37 s
+    kp_yaw: 5.0
+    ki_yaw: 0.0
+    kd_yaw: 0.4
+  integral_limit: 0.5 # anti-windup (sin cambios)
+  linear_speed: 0.20
+  max_angular: 2.0
+  # Nota: el Exp. 3 (cuadrado) se corrio con las ganancias por defecto del nodo
+  # (kp_yaw 3.0, kd_yaw 0.4), como indica el enunciado.
+
+robot_real:           # MicroROS-Pi5, capytown_esan bringup.launch.py, ROS_DOMAIN_ID=20
+  odom_topic: /odom   # llega a ~11 Hz en el robot (50 Hz en el simulador)
+  recta:              # 1D en el robot (corridas 2-4): desvio medido con cinta 1.8 / 1.4 / 2.2 cm
+    kp: 2.0
+    ki: 0.0           # no se uso Ki en el robot (ver informe)
+    kd: 6.0
+  giro:               # giro90 intento 1: 87 deg con transportador (intento 2, kp_yaw 1.5 y w<=0.5: 88 deg)
+    kp_yaw: 3.0
+    ki_yaw: 0.0
+    kd_yaw: 0.4
+  integral_limit: 0.5
+  linear_speed: 0.08  # 0.10 en la corrida 1D_run1
+  max_angular: 1.0    # giro90; en el cuadrado 3B se uso 2.0

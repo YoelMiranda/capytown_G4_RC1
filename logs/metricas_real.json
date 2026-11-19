@@ -1,0 +1,104 @@
+{
+ "exp1d_real_run1": {
+  "fuente": "csv",
+  "e_medio_cm": 2.81,
+  "e_max_cm": 10.0,
+  "t_asent_s": 13.767,
+  "e_final_cm": 1.7,
+  "avance_m": 1.999,
+  "v": 0.1,
+  "wmax": 0.954
+ },
+ "exp1d_real_run2": {
+  "fuente": "csv",
+  "e_medio_cm": 2.95,
+  "e_max_cm": 10.0,
+  "t_asent_s": 24.433,
+  "e_final_cm": 0.13,
+  "avance_m": 1.998,
+  "v": 0.08,
+  "wmax": 0.625
+ },
+ "rc1_real_1d_run1_bag": {
+  "fuente": "bag",
+  "e_medio_cm": 2.63,
+  "e_max_cm": 10.0,
+  "t_asent_s": 11.898043632507324,
+  "e_final_cm": -0.33,
+  "avance_m": 2.031,
+  "v": 0.08,
+  "wmax": 0.7322799983434998
+ },
+ "rc1_real_1d_run2_bag": {
+  "fuente": "bag",
+  "e_medio_cm": 2.48,
+  "e_max_cm": 10.0,
+  "t_asent_s": 10.322255849838257,
+  "e_final_cm": -0.2,
+  "avance_m": 2.024,
+  "v": 0.08,
+  "wmax": 0.6355605620089304
+ },
+ "exp2_real": {
+  "fuente": "csv",
+  "sobreimpulso_pct": 0.0,
+  "t_asent_s": 2.233,
+  "giro_final_deg": 89.99,
+  "e_final_deg": 0.01,
+  "wmax": 1.0
+ },
+ "exp2_real_intento2": {
+  "fuente": "csv",
+  "sobreimpulso_pct": 0.85,
+  "t_asent_s": 4.133,
+  "giro_final_deg": 90.76,
+  "e_final_deg": -0.76,
+  "wmax": 0.5
+ },
+ "exp2_real_intento3": {
+  "fuente": "csv",
+  "sobreimpulso_pct": 0.0,
+  "t_asent_s": 7.273,
+  "giro_final_deg": 89.63,
+  "e_final_deg": 0.37,
+  "wmax": 0.4
+ },
+ "rc1_giro90_run1_bag": {
+  "fuente": "bag",
+  "sobreimpulso_pct": 0.0,
+  "t_asent_s": 6.6517133712768555,
+  "giro_final_deg": 89.98,
+  "e_final_deg": 0.02,
+  "wmax": 0.4
+ },
+ "exp3a_real": {
+  "fuente": "csv",
+  "cierre_odom_cm": 34.4,
+  "yaw_odom_deg": 349.8,
+  "t_s": 48.0
+ },
+ "exp3b_real_run1": {
+  "fuente": "csv",
+  "cierre_odom_cm": 2.4,
+  "yaw_odom_deg": 356.4,
+  "t_s": 130.0
+ },
+ "exp3b_real_run2": {
+  "fuente": "csv",
+  "cierre_odom_cm": 1.6,
+  "yaw_odom_deg": 358.0,
+  "t_s": 131.6
+ },
+ "exp3b_real_run3": {
+  "fuente": "csv",
+  "cierre_odom_cm": 2.0,
+  "yaw_odom_deg": 358.7,
+  "t_s": 128.4
+ },
+ "rc1_real_3b_run1_bag": {
+  "fuente": "bag",
+  "cierre_odom_cm": 3.4,
+  "yaw_odom_deg": 359.9,
+  "t_s": 136.5
+ }
+}

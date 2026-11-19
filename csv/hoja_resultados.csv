@@ -1,0 +1,36 @@
+prueba,planta,noise,kp,ki,kd,kp_yaw,ki_yaw,kd_yaw,prediccion,cierre_odom_cm,cierre_real_cm,yaw_acum_deg,notas
+1A,sim,low,,,,,,,zigzag permanente; nunca se asienta en ±2 cm; error final depende de dónde termine,,,,|e|medio=6.48cm; |e|max=11.72cm; t_asent=10.11s (no se asienta); e_final=1.01cm
+1B,sim,low,3.0,0.0,0.0,,,,se acerca pero cruza la linea y oscila sin amortiguarse,,,,|e|medio=6.03cm; |e|max=10.88cm; t_asent=10.27s (no se asienta); e_final=1.37cm
+1C,sim,low,3.0,0.0,4.0,,,,Kd amortigua sin cruzar; queda ~2 cm al costado por el sesgo,,,,|e|medio=2.85cm; |e|max=10.00cm; no se asienta (queda fuera de ±2 cm); e_final=2.31cm
+1D,sim,low,3.0,0.5,4.0,,,,Ki elimina el residuo del sesgo; error final < 1 cm,,,,|e|medio=2.51cm; |e|max=10.00cm; t_asent=5.77s; e_final=0.31cm
+2a,sim,low,,,,1.0,0.0,0.0,suave sin sobreimpulso; asienta en ~4 s (lento),,,,sobreimpulso=0.00%; t_asent=3.84s; e_final=1.46deg
+2b,sim,low,,,,10.0,0.0,0.0,rapido con sobreimpulso ~5%,,,,sobreimpulso=9.52% (mayor a lo predicho); t_asent=1.50s; e_final=0.00deg
+2c,sim,low,,,,10.0,0.0,1.2,menos sobreimpulso pero riesgo de vibrar y no asentarse,,,,sobreimpulso=0.00%; t_asent=1.27s; e_final=0.73deg (no vibro: el limite de 8 rad/s2 suaviza el D)
+2_prop1,sim,low,,,,3.0,0.0,0.4,~2.2 s sin sobreimpulso,,,,sobreimpulso=0.00%; t_asent=2.00s; e_final=1.06deg
+2_prop2,sim,low,,,,5.0,0.0,0.4,mas rapido; podria aparecer sobreimpulso,,,,sobreimpulso=0.00%; t_asent=1.37s; e_final=0.76deg (ELEGIDA)
+2_prop3,sim,low,,,,5.0,0.0,0.8,mas Kd amortigua mas,,,,sobreimpulso=0.00%; t_asent=1.43s; e_final=0.80deg (Kd extra solo frena)
+3A_run1,sim,low,,,,,,,real 10-30 cm; odom parecido al real,4.4,24.3,349.7,bias segun prueba
+3A_run2,sim,low,,,,,,,real 10-30 cm; odom parecido al real,1.7,22.2,355.9,bias segun prueba
+3A_run3,sim,low,,,,,,,real 10-30 cm; odom parecido al real,1.5,34.1,346.9,bias segun prueba
+3B_run1,sim,low,3.0,0.0,4.0,3.0,0.0,0.4,odom 1-5 cm; real mayor (10-30 cm),0.1,11.8,363.7,bias segun prueba
+3B_run2,sim,low,3.0,0.0,4.0,3.0,0.0,0.4,odom 1-5 cm; real mayor (10-30 cm),0.3,54.0,372.7,bias segun prueba
+3B_run3,sim,low,3.0,0.0,4.0,3.0,0.0,0.4,odom 1-5 cm; real mayor (10-30 cm),0.6,31.7,372.2,bias segun prueba
+3C_run1,sim,low,3.0,0.5,4.0,3.0,0.0,0.4,odom igual de chico; real no mejora,0.2,15.0,366.4,bias segun prueba
+3C_run2,sim,low,3.0,0.5,4.0,3.0,0.0,0.4,odom igual de chico; real no mejora,0.4,49.0,341.5,bias segun prueba
+3C_run3,sim,low,3.0,0.5,4.0,3.0,0.0,0.4,odom igual de chico; real no mejora,0.2,35.4,357.5,bias segun prueba
+3A_med,sim,medium,,,,,,,cierre real ~2x que con low,8.2,18.3,346.4,prueba de estres
+3B_med,sim,medium,3.0,0.0,4.0,3.0,0.0,0.4,cierre real ~2x que con low,0.4,81.3,338.3,prueba de estres
+3C_med,sim,medium,3.0,0.5,4.0,3.0,0.0,0.4,cierre real ~2x que con low,0.3,51.6,341.8,prueba de estres
+2_giro90_intento1,real,-,,,,3.0,0.0,0.4,mas sobreimpulso que en sim,,,89.99 (odom),exp2_real.csv; max_angular 1.0; 0% sobreimp; t_asent 2.23 s; sin bag; transportador 87 deg (error 3 deg)
+2_giro90_intento2,real,-,,,,1.5,0.0,0.4,mas sobreimpulso que en sim,,,90.76 (odom),exp2_real_intento2.csv; max_angular 0.5; 0.85% sobreimp; t_asent 4.13 s; robot movido a mano ~100 s despues de FIN; sin bag; transportador 88 deg (error 2 deg)
+2_giro90_bag,real,-,,,,1.0,0.0,0.4,mas sobreimpulso que en sim,,,89.98 (odom),solo bag rc1_giro90_run1 (04:09); max_angular 0.4; t_asent 6.65 s; sin CSV; sin medicion de transportador
+2_giro90_intento3,real,-,,,,1.0,0.0,0.4,mas sobreimpulso que en sim,,,89.63 (odom),exp2_real_intento3.csv; max_angular 0.4; t_asent 7.27 s; sin bag; transportador 86 deg (error 4 deg)
+1D_run1,real,-,3.0,0.0,6.0,,,,zigzag mayor que en sim,,,,exp1d_real_run1.csv; v 0.10; e_final 1.70 cm (odom); t_asent 13.8 s; sin bag; cinta desvio lateral final 3.5 cm
+1D_run2,real,-,2.0,0.0,6.0,,,,zigzag mayor que en sim,,,,solo bag rc1_real_1d_run1; v 0.08; e_final -0.33 cm (odom); t_asent 11.9 s; sin CSV del nodo; cinta 1.8 cm
+1D_run3,real,-,2.0,0.0,6.0,,,,zigzag mayor que en sim,,,,solo bag rc1_real_1d_run2; v 0.08; e_final -0.20 cm (odom); t_asent 10.3 s; sin CSV del nodo; cinta 1.4 cm
+1D_run4,real,-,2.0,0.0,6.0,,,,zigzag mayor que en sim,,,,exp1d_real_run2.csv = bag rc1_real_1d_run3; v 0.08; e_final 0.13 cm (odom); t_asent 24.4 s; cinta 2.2 cm
+3A,real,-,,,,,,,cierra peor que en sim (derrape),34.4,29.5,349.8 (odom),exp3a_real.csv; v 0.20; giro por tiempo 0.8 rad/s; FALTA bag rc1_real_3a
+3B_bag,real,-,2.0,0.0,6.0,3.0,0.0,0.4,real >> odom,3.4,,359.9 (odom),solo bag rc1_real_3b_run1 (07:29); v 0.08; max_angular 2.0; sin CSV; sin medicion de cinta
+3B_run1,real,-,2.0,0.0,6.0,3.0,0.0,0.4,real >> odom,2.4,18.5,356.4 (odom),exp3b_real_run1.csv (07:35); v 0.08; max_angular 2.0; sin bag
+3B_run2,real,-,2.0,0.0,6.0,3.0,0.0,0.4,real >> odom,1.6,22.0,358.0 (odom),exp3b_real_run2.csv = bag rc1_real_3b_run2; v 0.08
+3B_run3,real,-,2.0,0.0,6.0,3.0,0.0,0.4,real >> odom,2.0,16.5,358.7 (odom),exp3b_real_run3.csv = bag rc1_real_3b_run3; v 0.08

@@ -1,0 +1,61 @@
+== topic list
+/beep
+/camera/camera_info
+/camera/image_raw
+/cmd_vel
+/goal_pose
+/imu/data_raw
+/initialpose
+/joint_states
+/map
+/map_updates
+/odom
+/parameter_events
+/race/hud
+/race/hud_array
+/race/track_markers
+/robot_description
+/rosout
+/scan
+/sim/collision
+/sim/pose
+/tf
+/tf_static
+/turtle1/cmd_vel
+/vel_raw
+/voltage
+== hz /odom
+average rate: 27.337
+	min: 0.011s max: 0.472s std dev: 0.08394s window: 28
+average rate: 38.734
+	min: 0.010s max: 0.472s std dev: 0.05071s window: 79
+average rate: 42.436
+	min: 0.008s max: 0.472s std dev: 0.03986s window: 129
+average rate: 44.308
+	min: 0.006s max: 0.472s std dev: 0.03396s window: 179
+average rate: 45.453
+	min: 0.006s max: 0.472s std dev: 0.03002s window: 230
+== /sim/pose
+header:
+  stamp:
+    sec: 1794503479
+    nanosec: 849363360
+  frame_id: map
+pose:
+  position:
+    x: 1.0
+    y: 1.0
+    z: 0.0
+  orientation:
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+---
+Nota: /odom en régimen ≈ 50 Hz (el promedio inicial incluye el hueco del arranque de ros2 topic hz)
+Parte A (noise=high, teleop, ~2 vueltas en 421 s): cierre /odom = 76.1 cm | cierre REAL = 6.2 cm | yaw /odom = 790.4 deg | yaw REAL = 726.9 deg
+Se manejó mirando RViz (pose casi real): el robot volvió de verdad al inicio (6.2 cm), pero /odom acumuló 76 cm y 63 deg de error que el piso causó y las ruedas no midieron.
+Freno: con una sola orden (ros2 topic pub --once, v=0.2) el robot avanza ~0.5 s y se detiene solo: sim_robot frena si no llega /cmd_vel en 0.5 s (cmd_timeout), igual que el robot real.
+== hz /odom (12 s, en régimen)
+average rate: 50.025
+	min: 0.006s max: 0.031s std dev: 0.00382s window: 558

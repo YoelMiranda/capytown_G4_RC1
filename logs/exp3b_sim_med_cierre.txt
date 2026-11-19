@@ -1,0 +1,5 @@
+[INFO] [1794507344.656506443] [cierre_real]: Registrando /sim/pose y /odom... (Ctrl+C para terminar)
+muestras: 1538  (76.9 s)
+cierre según /odom :    0.4 cm    yaw acumulado:   359.5 deg
+cierre REAL        :   81.3 cm    yaw acumulado:   338.3 deg
+grafica            : /home/joaquin/rc1/exp3b_sim_med_cierre.png

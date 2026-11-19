@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Informe RC-1</title>
+<style>
+@page { size: A4; margin: 10mm 11mm; }
+* { box-sizing: border-box; }
+body { font-family: "Inter","Liberation Sans","DejaVu Sans",Arial,sans-serif; font-size: 7.6pt; line-height: 1.28; color:#1d1d1b; margin:0; }
+h1 { font-size: 11.5pt; margin: 0 0 1px; }
+.sub { color:#52514e; font-size:7.3pt; margin-bottom:4px; }
+h2 { font-size: 8.4pt; margin: 6px 0 2px; color:#1f5fae; border-bottom: 0.6pt solid #c9d6ea; padding-bottom:1px; }
+p { margin: 2px 0; }
+table { border-collapse: collapse; width: 100%; margin: 2px 0 3px; }
+th, td { border: 0.5pt solid #cfcec8; padding: 1.2px 3px; text-align: center; font-size: 7pt; }
+th { background:#eef2f8; font-weight:600; }
+td.l, th.l { text-align:left; }
+.pend { background:#fff2b3; padding:0 2px; font-weight:600; }
+.cols { display:grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+ul { margin: 1px 0 1px 13px; padding:0; } li { margin: 0.5px 0; }
+.small { font-size:6.6pt; color:#52514e; }
+</style></head><body>
+<h1>RC-1 · Control PID: del simulador al robot real</h1>
+<div class="sub">Robótica (08079) · ESAN 2026-2 · Sección S-003 · CapyTown Grupo 4: Yoel Miranda, Aaron Cruzado, Joaquín Rodríguez, Simón Contreras · Nodo <code>cuadrado_controller.py</code> sin modificar · Simulador <code>yahboomcar_sim</code>, arena_rc1, noise:=low</div>
+
+<h2>(a) Predicción (escrita antes de ejecutar) frente a lo medido</h2>
+<table>
+<tr><th class="l">Pregunta</th><th class="l">Predicción</th><th class="l">Medición</th></tr>
+<tr><td class="l">Recta solo P (Kp 3) / con Kd</td><td class="l">Solo P cruza la línea y oscila sin amortiguar; Kd amortigua. Con P+D queda ≈ bias/Kp = 0.06/3 = 2 cm al costado; Ki lo elimina.</td><td class="l">Se cumplió: 1B no se asienta (|e|máx 10.9 cm); 1C queda en 2.31 cm; 1D termina en 0.31 cm.</td></tr>
+<tr><td class="l">Cierre del cuadrado con PID sobre /odom (sim, low)</td><td class="l">Nodo: 1–5 cm. Real: mayor, 10–30 cm (el empujón del piso no entra en /odom).</td><td class="l">Nodo 0.1–0.6 cm; real 11.8–54.0 cm (media 32.5 cm). Dirección correcta; el real superó el rango en 2 de 3 corridas.</td></tr>
+<tr><td class="l">1° de yaw al iniciar un lado de 2 m</td><td class="l">2·sin 1° ≈ 3.5 cm por lado; ≈ 10 cm tras 4 lados con 1° en cada giro.</td><td class="l">3B sim: 4.5–13° de yaw que /odom no vio → 12–54 cm, coherente con ≈ 3.5 cm/°.</td></tr>
+<tr><td class="l">Copiar ganancias sim → robot</td><td class="l">Más zigzag y sobreimpulso: inercia/motores y retardo de /odom; además derrape χ y sesgo real.</td><td class="l">Con Kp 3 / Kd 6 la recta real oscila ±4 cm (en sim no cruza); se bajó Kp a 2 y v a 0.08 m/s.</td></tr>
+</table>
+<p class="small">Errores de predicción declarados: en 2b se predijo ≈ 5 % y salió 9.52 %; en 2c se predijo vibración por Kd alto y no ocurrió (el límite de 8 rad/s² del simulador suaviza el término D); en 3A se predijo /odom ≈ real y salió 2.5 cm frente a 26.9 cm.</p>
+
+<h2>(b) Hoja de resultados (resumen; detalle en <code>csv/hoja_resultados.csv</code>)</h2>
+<div class="cols">
+<div>
+<table>
+<tr><th>Prueba (sim)</th><th>Kp</th><th>Ki</th><th>Kd</th><th>|e| medio</th><th>t asent ±2 cm</th><th>e final</th></tr>
+<tr><td>1A bang-bang</td><td colspan="3">ω₀ = 0.25</td><td>6.48 cm</td><td>no</td><td>1.01*</td></tr>
+<tr><td>1B solo P</td><td>3</td><td>0</td><td>0</td><td>6.03</td><td>no</td><td>1.37*</td></tr>
+<tr><td>1C P+D</td><td>3</td><td>0</td><td>4</td><td>2.85</td><td>no (queda en 2.3)</td><td>2.31</td></tr>
+<tr><td><b>1D PID</b></td><td>3</td><td>0.5</td><td>4</td><td>2.51</td><td>5.77 s</td><td><b>0.31</b></td></tr>
+</table>
+<table>
+<tr><th>Giro (sim)</th><th>kp_yaw</th><th>kd_yaw</th><th>Sobreimp.</th><th>t asent ±2°</th><th>e final</th></tr>
+<tr><td>2a</td><td>1</td><td>0</td><td>0 %</td><td>3.84 s</td><td>1.46°</td></tr>
+<tr><td>2b</td><td>10</td><td>0</td><td>9.52 %</td><td>1.50 s</td><td>0.00°</td></tr>
+<tr><td>2c</td><td>10</td><td>1.2</td><td>0 %</td><td>1.27 s</td><td>0.73°</td></tr>
+<tr><td>prop1 / prop3</td><td>3 / 5</td><td>0.4 / 0.8</td><td>0 %</td><td>2.00 / 1.43 s</td><td>1.06 / 0.80°</td></tr>
+<tr><td><b>prop2 (elegida)</b></td><td>5</td><td>0.4</td><td>0 %</td><td><b>1.37 s</b></td><td>0.76°</td></tr>
+</table>
+<p class="small">* no asentado: es el punto de la oscilación donde terminó la recta.</p>
+</div>
+<div>
+<table>
+<tr><th>Robot real</th><th>Ganancias</th><th>Según /odom</th><th>Medido</th></tr>
+<tr><td>Giro 90° int. 1</td><td>kp_yaw 3, kd 0.4, ω≤1.0</td><td>89.99°, 0 %, 2.23 s</td><td>87° (−3°)</td></tr>
+<tr><td>Giro 90° int. 2/3</td><td>kp_yaw 1.5 / 1.0</td><td>90.76° / 89.63°</td><td>88° (−2°) / 86° (−4°)</td></tr>
+<tr><td>1D run1</td><td>Kp 3, Ki 0, Kd 6, v 0.10</td><td>e final 1.70 cm</td><td>3.5 cm</td></tr>
+<tr><td>1D run2–4</td><td>Kp 2, Ki 0, Kd 6, v 0.08</td><td>−0.33 / −0.20 / 0.13 cm</td><td>1.8 / 1.4 / 2.2 cm</td></tr>
+<tr><td>3A lazo abierto</td><td>v 0.20, giro por tiempo</td><td>cierre 34.4 cm, 349.8°</td><td>29.5 cm</td></tr>
+<tr><td>3B run1–3</td><td>Kp 2, Kd 6; yaw 3 / 0.4</td><td>2.4 / 1.6 / 2.0 cm</td><td>18.5 / 22.0 / 16.5 cm</td></tr>
+<tr><td>3B media</td><td></td><td>2.0 cm</td><td><b>19.0 cm</b></td></tr>
+</table>
+<p class="small"><b>Rúbrica:</b> E5 cumple (int. 2: 2°; int. 1 en el límite de 3°; int. 3 no, 4°). E6 cumple (las 4 rectas ≤ 5 cm). E7 cumple (3B media 19.0 cm ≤ 25 cm y &lt; 3A 29.5 cm). Bonus no (≤ 10 cm).</p><p class="small">"Medido" = transportador (giro) y cinta métrica (desvío final de la recta; cierre del cuadrado, de la marca de inicio al centro del robot).</p>
+</div>
+</div>
+
+<h2>(c) Cierre según /odom frente al real</h2>
+<table>
+<tr><th>Simulador (low)</th><th>3A lazo abierto</th><th>3B odom + PID</th><th>3C PID + Ki</th><th>3B medium</th></tr>
+<tr><td>Cierre según /odom (media)</td><td>2.5 cm</td><td>0.3 cm</td><td>0.3 cm</td><td>0.4 cm</td></tr>
+<tr><td>Cierre REAL /sim/pose (corridas)</td><td>24.3 · 22.2 · 34.1</td><td>11.8 · 54.0 · 31.7</td><td>15.0 · 49.0 · 35.4</td><td>81.3</td></tr>
+<tr><td>Cierre REAL (media)</td><td>26.9 cm</td><td><b>32.5 cm</b></td><td>33.1 cm</td><td>—</td></tr>
+</table>
+<p>El PID cierra el lazo sobre /odom y corrige solo lo que /odom ve: el nodo informa cierres de décimas de cm mientras el robot queda a 12–54 cm (81 cm con medium), porque el piso lo gira hasta 13° (21° en medium) sin que las ruedas lo midan. Cerrar el lazo no mejoró el cierre real frente al lazo abierto: <i>un lazo cerrado es tan bueno como el sensor que lo cierra</i>. El giro que causa el piso sí lo vería el giroscopio (<code>/imu/data_raw</code>, angular_velocity.z). En la Parte A, manejando a mano con RViz, el robot volvió de verdad (6.2 cm), pero /odom creía que estaba a 76.1 cm. En el robot real: 3B, /odom media 2.0 cm frente a cinta <b>19.0 cm</b>; 3A, /odom 34.4 cm frente a cinta 29.5 cm. Igual que en el simulador, /odom informa un cuadrado casi perfecto mientras el robot queda a ≈ 19 cm; aun así 3B cierra mejor que 3A (19.0 &lt; 29.5 cm). El transportador marca 86–88° donde /odom dice ≈ 90°: el robot gira 2–4° menos de lo que /odom cree, y con ≈ 3.5 cm por grado y por lado eso explica la mayor parte de los 19 cm.</p>
+
+<h2>(d) Por qué cambió el comportamiento al pasar al robot</h2>
+<ul>
+<li><b>/odom más lento y con retardo.</b> En el robot llega a ≈ 11 Hz (50 Hz en sim, medido en los bags). El nodo calcula a 30 Hz con la misma pose durante ~3 ciclos, así que la derivada recibe saltos. Con Kp 3 y Kd 6 la recta real oscila ±4 cm con periodo ≈ 12 s; en sim, con Kp 3 y Kd 4, no cruza la línea. Se bajó Kp a 2 y v a 0.08 m/s (más tiempo por cm de error), y quedó en |e| ≈ 2.5–3 cm con error final ≤ 0.4 cm según /odom.</li>
+<li><b>Motores e inercia.</b> Con ω = 0.5 rad/s el robot casi no gira durante los primeros ≈ 0.6 s (zona muerta o fricción); el simulador solo tiene límites de aceleración. Por eso el giro real es más lento que el de sim con las mismas ganancias.</li>
+<li><b>Giro por tiempo (3A).</b> En sim, /odom cierra a 2.5 cm; en el robot, a 34.4 cm, con 349.8° en total (≈ 2.5° cortos por giro). La rampa de los motores y el derrape χ hacen que girar 0.8 rad/s durante π/1.6 s no dé 90°. Por eso el lazo abierto cierra mejor en sim que en el robot.</li>
+<li><b>Sesgo y Ki.</b> Según /odom, el sesgo real es pequeño tras la calibración de r y b_eff del RC-0, y no se usó Ki en el robot. La cinta muestra un desvío de 1.8 cm de media (1D run2–4) donde /odom marca ≤ 0.4 cm: un residuo que /odom no ve y que Ki tampoco puede corregir, porque Ki solo cancela lo que /odom mide.</li>
+</ul>
+
+<h2>(e) Qué cambiaríamos para el RC-2</h2>
+<ul>
+<li>Fusionar el giroscopio (<code>/imu/data_raw</code>) con /odom para el yaw: es el error que más pesa en el cierre (≈ 3.5 cm por grado y por lado).</li>
+<li>Filtrar la derivada o calcularla solo cuando llega un /odom nuevo, y subir la frecuencia de /odom o bajar control_rate para que coincidan.</li>
+<li>En RC-2 el error lateral vendrá de la cámara (carril): ya no depende de /odom, pero hereda el retardo de la imagen. Sintonizar Kp bajo primero, Kd moderado y un parámetro por prueba.</li>
+<li>Registrar bag, CSV y medición con cinta de la misma corrida, con el mismo nombre, para que la evidencia quede pareada.</li>
+</ul>
+</body></html>
