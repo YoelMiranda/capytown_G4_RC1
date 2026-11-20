@@ -1,7 +1,7 @@
 # CapyTown G4 · RC-1 — Control PID: del simulador al robot real
 
 Robótica (08079) · Universidad ESAN · 2026-2 · Sección S-003 · Robot Yahboom MicroROS-Pi5.
-Nodo de la clase `cuadrado_controller.py` (sin modificar), probado en el simulador
+Nodo de la clase `scripts_pdi/cuadrado_controller.py` (sin modificar), probado en el simulador
 `yahboomcar_sim` (repo `codeplai/microrospi5-sim`) y en el robot real.
 
 **Informe:** [`informe.pdf`](informe.pdf) (1 página; fuente en `docs/informe.html`).
@@ -61,6 +61,8 @@ plots/                 PNG de 09_plot_csv.py y cierre_real.py (sim) y de tools/a
 bags/                  bags del robot real (carpetas rosbag2, sqlite3)
 logs/                  salida completa del nodo y de cierre_real.py por corrida del Exp. 3
 tools/                 bag2csv.py (decodifica bags) y analizar.py (métricas y gráficas del robot)
+scripts_pdi/           material del curso: cuadrado_controller.py + core_cuadrado.py (sin modificar),
+                       09_plot_csv.py (copia con PARCHE RC-1) y cierre_real.py
 ```
 
 ## Correspondencia entre CSV, bag y medición (robot real)

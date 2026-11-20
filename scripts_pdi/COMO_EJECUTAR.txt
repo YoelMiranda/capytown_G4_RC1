@@ -1,0 +1,162 @@
+============================================================================
+ COMO EJECUTAR LOS SIMULADORES ANIMADOS DE CAPYTOWN
+ 10_experimentos_animados.py   y   11_ekf_animado.py
+============================================================================
+
+Estos dos scripts NO necesitan ROS ni el robot. Corren en tu laptop con
+Python y abren UNA ventana animada.
+
+
+----------------------------------------------------------------------------
+ 1. REQUISITOS (una sola vez)
+----------------------------------------------------------------------------
+
+ - Python 3.9 o superior (probado con Python 3.11).
+ - Dos librerias: numpy y matplotlib.
+
+ Comprueba que tienes Python:
+
+     python --version
+
+ Instala las librerias:
+
+     pip install numpy matplotlib
+
+ (Si "python" no funciona en Windows, prueba con:  py --version  y  py -m pip install numpy matplotlib)
+
+
+----------------------------------------------------------------------------
+ 2. ABRIR LA CARPETA CORRECTA  (importante)
+----------------------------------------------------------------------------
+
+ Los dos scripts importan el archivo core_cuadrado.py, que esta en la misma
+ carpeta. Por eso hay que EJECUTARLOS DESDE scripts_pdi:
+
+     cd "C:\Users\marks\Documents\ESAN\Cursos\robotica\clasePID\scripts_pdi"
+
+ (En VS Code: abre una terminal y escribe ese cd. Si ejecutas desde otra
+ carpeta saldra el error:  ModuleNotFoundError: No module named 'core_cuadrado')
+
+
+----------------------------------------------------------------------------
+ 3. EXPERIMENTOS ANIMADOS  (10_experimentos_animados.py)
+----------------------------------------------------------------------------
+
+ Abrir con el escenario por defecto (3B, cuadrado con PID sobre /odom):
+
+     python 10_experimentos_animados.py
+
+ Abrir directamente en otro escenario (el nombre va ENTRE COMILLAS y con los
+ espacios exactos, hay DOS espacios despues del codigo):
+
+     python 10_experimentos_animados.py --inicio "1C  P + D"
+     python 10_experimentos_animados.py --inicio "2b  Giro kp alto"
+     python 10_experimentos_animados.py --inicio "3A+ Abierto calibrado"
+     python 10_experimentos_animados.py --inicio "4   Deriva 1 grado"
+
+ Escenarios disponibles:
+     "1A  Bang-bang"          "1B  Solo P"            "1C  P + D"
+     "1D  PID"                "2a  Giro kp bajo"      "2b  Giro kp alto"
+     "2c  Giro kp alto + kd"  "3A  Abierto (chi 1.2)" "3A+ Abierto calibrado"
+     "3B  Odom + PID"         "3C  Sesgo + Ki"        "4   Deriva 1 grado"
+
+ COMO USAR LA VENTANA
+   - Izquierda abajo: lista "Escenario". Haz clic para cambiar de experimento.
+   - Sliders: kp, ki, kd (linea y giro), arranque, sesgo de motores, derrape chi,
+     turn_scale y ruido de /odom. Cambian el controlador EN VIVO.
+   - Boton "Reiniciar": vuelve el robot al punto de partida.
+   - Boton "Pausa" / "Seguir": congela la animacion.
+   - Boton "Empujon": desplaza al robot 6 cm y lo desvia 8 grados.
+   - Botones verdes "Comparar ...": corren varios escenarios A LA VEZ y los
+     superponen (como las graficas de las diapositivas 66, 67 y 69).
+        Comparar 1A-1D           -> los 4 controladores de la recta
+        Comparar giros           -> kp bajo / kp alto / kp alto + kd
+        Comparar 3A / 3B / 3C    -> cuadrado: abierto, calibrado, PID, PID + Ki
+   - Slider "velocidad de simulacion": 1 = lento, 10 = rapido.
+
+ IDEAS PARA PROBAR
+   - 3B: mueve kp, kd y ki y mira como cambia el error de las rectas. Pulsa
+     "Empujon" y compara con kd = 0 y kd = 8.
+   - 3A: pon turn_scale = 0.83 y mira como el cuadrado vuelve a cerrar.
+   - 1D: sube ki mucho (wind-up).
+   - Escenario 4: sin correccion, 1 grado de error de yaw = 3.5 cm a los 2 m.
+
+ Sin ventana (solo guardar una imagen del resultado final):
+
+     python 10_experimentos_animados.py --inicio "2b  Giro kp alto" --guardar giro.png
+     python 10_experimentos_animados.py --guardar cmp.png --comparar "Comparar 1A-1D"
+
+
+----------------------------------------------------------------------------
+ 4. EKF ANIMADO  (11_ekf_animado.py)
+----------------------------------------------------------------------------
+
+ Abrir la ventana:
+
+     python 11_ekf_animado.py
+
+ Que muestra: el robot (negro) recorre el cuadrado de 2 x 2 m una y otra vez y
+ tres estimadores tratan de saber donde esta:
+     azul   solo encoders
+     verde  solo giroscopio  (deriva por su sesgo)
+     rojo   filtro de Kalman (fusiona los dos)
+
+ Sliders:
+     sesgo del giroscopio ........ cuanto deriva el giroscopio (grados/s)
+     ruido de encoders ........... ruido de su medicion de yaw (grados)
+     derrape por giro ............ salto de los encoders al girar (grados)
+     R ........................... cuanto DESCONFIA el filtro de los encoders
+     Q ........................... cuanto DESCONFIA el filtro del modelo
+     velocidad de simulacion
+
+ IDEAS PARA PROBAR
+   - Derrape por giro = 0: el Kalman gana por mucho.
+   - Sube el derrape: el filtro no puede distinguirlo de un giro real y se
+     parece cada vez mas a los encoders.
+   - R muy grande: casi ignora los encoders y se parece al giroscopio.
+   - R muy chica: sigue el ruido de los encoders.
+
+ Sin ventana (guarda una imagen y escribe el resumen en la terminal):
+
+     python 11_ekf_animado.py --guardar ekf.png --segundos 180
+
+
+----------------------------------------------------------------------------
+ 5. SI ALGO FALLA
+----------------------------------------------------------------------------
+
+ "No module named 'numpy'" o "'matplotlib'"
+     -> pip install numpy matplotlib
+
+ "No module named 'core_cuadrado'"
+     -> No estas en la carpeta scripts_pdi. Haz el cd del paso 2.
+
+ La ventana no abre / no muestra nada
+     -> Prueba con:   python -c "import matplotlib; print(matplotlib.get_backend())"
+        Si dice "agg", instala un entorno grafico:  pip install pyqt5
+        o ejecuta desde una terminal normal de Windows (no desde un entorno
+        sin pantalla, ni por SSH).
+
+ La animacion va lenta
+     -> Baja la ventana de tamano o sube el slider "velocidad de simulacion".
+
+ Los nombres del --inicio dan error
+     -> Van entre comillas y con los espacios exactos (dos espacios despues
+        de 1A, 1B, 2a, 3B, etc.; tres despues de "4"). Copialos de la lista
+        de la seccion 3.
+
+
+----------------------------------------------------------------------------
+ 6. OTROS SCRIPTS DE LA CARPETA
+----------------------------------------------------------------------------
+
+ Los mismos experimentos sin animacion (salida en PNG + metricas):
+     python 08_cuadrado_sim.py --experimento cuadrado --v-scale 0.97 --w-scale 0.94
+
+ Simulador del e-puck siguiendo una linea circular:
+     python epuck_seguidor_sim.py
+
+ La lista completa esta en README.md de esta misma carpeta.
+
+ Universidad ESAN - Robotica 2026-I - CapyTown
+============================================================================
